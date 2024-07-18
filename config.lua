@@ -2,10 +2,11 @@ local config = {
     -- NOTE: EACH CONFIG SHOULD END WITH A COMMA
 
     -- Side Length of Working Farm
-    workingFarmSize = 6,
+    workingFarmSize = 9,
     -- Side Length of Storage Farm
-    storageFarmSize = 9,
-
+    storageFarmSize = 13,
+    workingFarmArea = 5 * 9,
+    storageFarmArea = 7 * 13,
     -- Once complete, remove all extra crop sticks to prevent the working farm from weeding
     cleanUp = true,
     -- Pickup any and all drops (don't change)
@@ -14,14 +15,12 @@ local config = {
     keepMutations = false,
     -- Stat-up crops during autoTier (Very Slow)
     statWhileTiering = false,
-
     -- Minimum tier for the working farm during autoTier
     autoTierThreshold = 13,
     -- Minimum Gr + Ga - Re for the working farm during autoStat (21 + 31 - 0 = 52)
     autoStatThreshold = 52,
     -- Minimum Gr + Ga - Re for the storage farm during autoSpread (23 + 31 - 0 = 54)
     autoSpreadThreshold = 50,
-
     -- Maximum Growth for crops on the working farm
     workingMaxGrowth = 21,
     -- Maximum Resistance for crops on the working farm
@@ -30,12 +29,10 @@ local config = {
     storageMaxGrowth = 23,
     -- Maximum Resistance for crops on the storage farm
     storageMaxResistance = 2,
-
     -- Minimum Charge Level
     needChargeLevel = 0.2,
     -- Max breed round before termination of autoTier.
     maxBreedRound = 1000,
-
     -- =========== DO NOT CHANGE ===========
 
     -- The coordinate for charger
@@ -48,7 +45,6 @@ local config = {
     relayFarmlandPos = {1, 1},
     -- The coordinate for the transvector dislocator
     dislocatorPos = {1, 2},
-
     -- The slot for spade
     spadeSlot = 0,
     -- The slot for the transvector binder
@@ -58,8 +54,5 @@ local config = {
     -- The slot which the robot will stop storing items
     storageStopSlot = -3
 }
-
-config.workingFarmArea = config.workingFarmSize^2
-config.storageFarmArea = config.storageFarmSize^2
 
 return config
