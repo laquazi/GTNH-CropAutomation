@@ -11,17 +11,15 @@ local function getFarm()
     return farm
 end
 
-
 local function updateFarm(slot, crop)
     farm[slot] = crop
 end
 
-
 local function scanFarm()
-    for slot=1, config.workingFarmArea, 2 do
+    for slot = 1, config.workingFarmArea, 2 do
         gps.go(gps.workingSlotToPos(slot))
         local crop = scanner.scan()
-            farm[slot] = crop
+        farm[slot] = crop
     end
 end
 
@@ -31,17 +29,14 @@ local function getStorage()
     return storage
 end
 
-
 local function resetStorage()
     storage = {}
 end
 
-
 local function addToStorage(crop)
-    storage[#storage+1] = crop
+    storage[#storage + 1] = crop
     reverseStorage[crop.name] = #storage
 end
-
 
 local function existInStorage(crop)
     if reverseStorage[crop.name] then
@@ -51,11 +46,9 @@ local function existInStorage(crop)
     end
 end
 
-
 local function nextStorageSlot()
     return #storage + 1
 end
-
 
 return {
     getFarm = getFarm,

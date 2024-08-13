@@ -29,6 +29,6 @@ else
 end
 
 -- INSTALL
-for i=1, #scripts do
+for i = 1, #scripts do
     shell.execute(string.format('wget -f %s%s/%s', repo, branch, scripts[i]))
 end

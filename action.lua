@@ -10,26 +10,22 @@ local scanner = require('scanner')
 local inventory_controller = component.inventory_controller
 local redstone = component.redstone
 
-
 local function needCharge()
     return computer.energy() / computer.maxEnergy() < config.needChargeLevel
 end
-
 
 local function fullyCharged()
     return computer.energy() / computer.maxEnergy() > 0.99
 end
 
-
 local function fullInventory()
-    for i=1, robot.inventorySize() do
+    for i = 1, robot.inventorySize() do
         if robot.count(i) == 0 then
             return false
         end
     end
     return true
 end
-
 
 local function charge()
     gps.go(config.chargerPos)
@@ -39,14 +35,13 @@ local function charge()
     until fullyCharged()
 end
 
-
 local function restockStick()
     local selectedSlot = robot.select()
 
     gps.go(config.stickContainerPos)
-    robot.select(robot.inventorySize()+config.stickSlot)
-    for i=1, inventory_controller.getInventorySize(sides.down) do
-        inventory_controller.suckFromSlot(sides.down, i, 64-robot.count())
+    robot.select(robot.inventorySize() + config.stickSlot)
+    for i = 1, inventory_controller.getInventorySize(sides.down) do
+        inventory_controller.suckFromSlot(sides.down, i, 64 - robot.count())
         if robot.count() == 64 then
             break
         end
@@ -55,15 +50,14 @@ local function restockStick()
     robot.select(selectedSlot)
 end
 
-
 local function dumpInventory()
     local selectedSlot = robot.select()
 
     gps.go(config.storagePos)
-    for i=1, (robot.inventorySize() + config.storageStopSlot) do
+    for i = 1, (robot.inventorySize() + config.storageStopSlot) do
         if robot.count(i) > 0 then
             robot.select(i)
-            for e=1, inventory_controller.getInventorySize(sides.down) do
+            for e = 1, inventory_controller.getInventorySize(sides.down) do
                 if inventory_controller.getStackInSlot(sides.down, e) == nil then
                     inventory_controller.dropIntoSlot(sides.down, e)
                     break
@@ -75,38 +69,35 @@ local function dumpInventory()
     robot.select(selectedSlot)
 end
 
-
 local function restockAll()
     dumpInventory()
     restockStick()
     charge()
 end
 
-
 local function placeCropStick(count)
     if count == nil then
         count = 1
     end
     local selectedSlot = robot.select()
-    if robot.count(robot.inventorySize()+config.stickSlot) < count + 1 then
+    if robot.count(robot.inventorySize() + config.stickSlot) < count + 1 then
         restockStick()
     end
-    robot.select(robot.inventorySize()+config.stickSlot)
+    robot.select(robot.inventorySize() + config.stickSlot)
     inventory_controller.equip()
-    for _=1, count do
+    for _ = 1, count do
         robot.useDown()
     end
     inventory_controller.equip()
     robot.select(selectedSlot)
 end
 
-
 local function deweed()
     local selectedSlot = robot.select()
     if config.keepDrops and fullInventory() then
         dumpInventory()
     end
-    robot.select(robot.inventorySize()+config.spadeSlot)
+    robot.select(robot.inventorySize() + config.spadeSlot)
     inventory_controller.equip()
     robot.useDown()
     if config.keepDrops then
@@ -116,18 +107,16 @@ local function deweed()
     robot.select(selectedSlot)
 end
 
-
 local function pulseDown()
     redstone.setOutput(sides.down, 15)
     os.sleep(0.1)
     redstone.setOutput(sides.down, 0)
 end
 
-
 local function transplant(src, dest)
     local selectedSlot = robot.select()
     gps.save()
-    robot.select(robot.inventorySize()+config.binderSlot)
+    robot.select(robot.inventorySize() + config.binderSlot)
     inventory_controller.equip()
 
     -- TRANSFER TO RELAY LOCATION
@@ -145,7 +134,6 @@ local function transplant(src, dest)
     local crop = scanner.scan()
     if crop.name == 'air' then
         placeCropStick()
-
     elseif crop.isCrop == false then
         database.addToStorage(crop)
         gps.go(gps.storageSlotToPos(database.nextStorageSlot()))
@@ -168,19 +156,16 @@ local function transplant(src, dest)
     robot.select(selectedSlot)
 end
 
-
 local function cleanUp()
-    for slot=1, config.workingFarmArea, 1 do
-
+    for slot = 1, config.workingFarmArea, 1 do
         -- Scan
         gps.go(gps.workingSlotToPos(slot))
         local crop = scanner.scan()
 
         -- Remove all children and empty parents
         if slot % 2 == 0 or crop.name == 'emptyCrop' then
+            -- Remove bad parents
             robot.swingDown()
-
-        -- Remove bad parents
         elseif crop.isCrop and crop.name ~= 'air' then
             if scanner.isWeed(crop, 'working') then
                 robot.swingDown()
@@ -194,7 +179,6 @@ local function cleanUp()
     end
     restockAll()
 end
-
 
 return {
     needCharge = needCharge,
